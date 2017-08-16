@@ -6,7 +6,7 @@ const es = require('elasticsearch')
 
 // const HOST = 'localhost:9200'
 const HOST = 'http://10.64.16.97:9200'
-const INDEX = 'catalog-1'
+const INDEX = 'catalog-2'
 const BATCH = 2000
 const args = process.argv
 
