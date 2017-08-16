@@ -7,6 +7,10 @@
     margin-bottom: 0.5em;
 }
 
+.search-result:not(:last-child) {
+    border-bottom: 1px solid hsl(0, 0%, 60%);
+}
+
 .search-result .hits-summary {
     cursor: pointer;
 }
