@@ -1,3 +1,4 @@
+/* global d3 */
 import './index.css';
 import SearchResultComponent from './components/search-result-component';
 import FilteredSearchResultsComponent from './components/filtered-search-results-component';
@@ -24,6 +25,13 @@ const distributionGraphComponent = new DistributionGraphComponent();
 
 let lastTwentySearchResultComponents = [];
 
+d3.select('button').on('click', ()=> {
+  d3.select('.modal-overlay').style('display', 'none');
+})
+
+d3.select('.toggle-modal').on('click', ()=> {
+  d3.select('.modal-overlay').style('display', 'flex');
+})
 /*
 fetch('http://10.64.16.97:22222/api/distribution').then(d => d.json()).then( d => {
   console.log('!!!!!!!!', d);
