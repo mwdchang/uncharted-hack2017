@@ -23,6 +23,9 @@ const _ = require('lodash')
 
 // Cache
 const distribution = JSON.parse(fs.readFileSync('distribution.json', 'utf-8'))
+let totalSearch = 0;
+let rtDistribution = {};
+
 
 socket.on('open', ()=> {
    console.log('connected...')
@@ -34,13 +37,6 @@ socket.on('message', (evt)=> {
    searchData.timestamp = (new Date()).getTime()
 
    console.log('recevied', searchData);
-
-   // FIXME
-   searchData.hits = [
-     {title: 'title 1', subject:['orange', 'apple', 'coffee']},
-     {title: 'title 2', subject:['orange', 'apple',]},
-     {title: 'title 3', subject:['orange', 'apple', 'coffee', 'music']}
-   ]
 
    client.search({
      index: INDEX,
@@ -106,17 +102,40 @@ socket.on('message', (evt)=> {
          subjects = subjects.concat(r.p_subject)
        })
 
+       /*
        console.log('!!!', matches)
        console.log('!!!', subjects)
+       */
 
        searchData.matches = matches
        searchData.subjects = _.uniq(subjects)
 
+       totalSearch++
+       let temp = searchData.subjects
+       temp.forEach( t => {
+         if (rtDistribution.hasOwnProperty(t) === false) {
+           rtDistribution[t] = 0;
+         }
+         rtDistribution[t] ++;
+       })
 
-       io.emit('broadcast', searchData)
+       const keys = Object.keys(rtDistribution)
+       let list = []
+       keys.forEach(key => {
+     		 list.push({
+     		 	subject: key,
+     		 	value: rtDistribution[key]
+     		 })
+     	 })
+       let rtResults = _.orderBy(list, [d => -d.value]);
+     	 rtResults = _.take(rtResults, 10);
+       let payload = {
+         total: totalSearch,
+         distribution: rtResults
+       }
 
-       // res.statusCode = 200;
-       // res.json(_metric.formatMetricList(response));
+       io.emit('broadcast', {type:'search', data: searchData})
+       io.emit('broadcast', {type:'rt-distribution', data: payload})
      },
      function(error) {
        console.log('doh !!!!', error)
