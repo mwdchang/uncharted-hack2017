@@ -4,15 +4,16 @@ export default class SearchResultComponent {
     constructor({
         terms,
         timestamp,
-        hits
+        matches,
+        subjects
      }) {
         const mainElement = document.createElement('li');
         mainElement.classList.add('search-result');
 
         mainElement.appendChild(this._searchTerm(terms));
         mainElement.appendChild(this._timestamp(timestamp));
-        mainElement.appendChild(this._hitsSummary(hits));
-        mainElement.appendChild(this._hitsDetails(hits));
+        mainElement.appendChild(this._matchesSummary(matches));
+        mainElement.appendChild(this._details(matches, subjects));
 
         this.element = mainElement;
     }
@@ -36,61 +37,72 @@ export default class SearchResultComponent {
         return timestampElement;
     }
 
-    _hitsSummary(hits) {
-        const hitsSummaryElement = document.createElement('div');
-        hitsSummaryElement.classList.add('hits-summary');
-        hitsSummaryElement.textContent = `${hits.length} results`;
+    _matchesSummary(matches) {
+        const matchesSummaryElement = document.createElement('div');
+        matchesSummaryElement.classList.add('matches-summary');
+        matchesSummaryElement.textContent = `${matches.length} results`;
 
-        hitsSummaryElement.onclick = () => {
+        matchesSummaryElement.onclick = () => {
             this._toggleHitsDetailsExpanded();
         }
 
-        return hitsSummaryElement;
+        return matchesSummaryElement;
     }
 
-    _hitsDetails(hits) {
-        const hitsDetailsContainerElement = document.createElement('div');
-        hitsDetailsContainerElement.classList.add('hits-details-container', 'collapsed');
+    _details(matches, subjects) {
+        const detailsContainerElement = document.createElement('div');
+        detailsContainerElement.classList.add('details-container', 'collapsed');
 
-        this._hitsDetailsContainerElement = hitsDetailsContainerElement;
+        detailsContainerElement.appendChild(this._matchesDetails(matches));
+        detailsContainerElement.appendChild(this._subjectsDetails(subjects));
 
-        hits.map(hit => {
-            const hitsDetailsElement = document.createElement('div');
-            hitsDetailsElement.classList.add('hit');
+        this._detailsContainerElement = detailsContainerElement;
 
-            const hitsTitle = document.createElement('div');
-            hitsTitle.classList.add('title');
-            hitsTitle.textContent = hit.title;
+        return detailsContainerElement;
+    }
 
-            hitsDetailsElement.appendChild(hitsTitle);
+    _matchesDetails(matches) {
+        const matchesDetailsContainerElement = document.createElement('div');
+        matchesDetailsContainerElement.classList.add('matches-container');
 
-            const subjectsContainer = document.createElement('div');
-            subjectsContainer.classList.add('subjects-container');
+        matches.map(matchTitle => {
+            const matchTitleElement = document.createElement('div');
+            matchTitleElement.classList.add('title');
+            matchTitleElement.textContent = matchTitle;
 
-            hitsDetailsElement.appendChild(subjectsContainer);
+            matchesDetailsContainerElement.appendChild(matchTitleElement);
 
-            hit.subject.map(subject => {
-                const subjectSpan = document.createElement('span');
-                subjectSpan.classList.add('subject');
-                subjectSpan.textContent = subject;
+            return matchTitleElement;
+        }).forEach(hitElement => matchesDetailsContainerElement.appendChild(hitElement));
 
-                return subjectSpan;
-            }).forEach(subjectSpan => subjectsContainer.appendChild(subjectSpan));
+        return matchesDetailsContainerElement;
+    }
 
-            return hitsDetailsElement;
-        }).forEach(hitElement => hitsDetailsContainerElement.appendChild(hitElement));
+    _subjectsDetails(subjects) {
+        const subjectsDetailsContainerElement = document.createElement('div');
+        subjectsDetailsContainerElement.classList.add('subjects-container');
 
-        return hitsDetailsContainerElement;
+        subjects.map(subject => {
+            const subjectElement = document.createElement('div');
+            subjectElement.classList.add('subject');
+            subjectElement.textContent = subject;
+
+            subjectsDetailsContainerElement.appendChild(subjectElement);
+
+            return subjectElement;
+        }).forEach(hitElement => subjectsDetailsContainerElement.appendChild(hitElement));
+
+        return subjectsDetailsContainerElement;
     }
 
     _toggleHitsDetailsExpanded() {
         this._hitsDetailsExpanded = !this._hitsDetailsExpanded;
-        if (this._hitsDetailsContainerElement.classList.contains('collapsed')) {
-            this._hitsDetailsContainerElement.classList.add('expanded');
-            this._hitsDetailsContainerElement.classList.remove('collapsed');
+        if (this._detailsContainerElement.classList.contains('collapsed')) {
+            this._detailsContainerElement.classList.add('expanded');
+            this._detailsContainerElement.classList.remove('collapsed');
         } else {
-            this._hitsDetailsContainerElement.classList.remove('expanded');
-            this._hitsDetailsContainerElement.classList.add('collapsed');
+            this._detailsContainerElement.classList.remove('expanded');
+            this._detailsContainerElement.classList.add('collapsed');
         }
     }
 }
