@@ -1,5 +1,6 @@
 import './index.css';
 import SearchResultComponent from './components/search-result-component';
+import SearchHits from './search-hits';
 
 const searchResultsContainer = document.getElementById('search-results-container');
 
@@ -8,6 +9,7 @@ if (!searchResultsContainer) {
 }
 
 const browserCounts = new Map();
+const searchHits = new SearchHits('search-hits');
 
 let listenToSocket = (socketUrl) => {
     const searchesSocket = io(socketUrl); //eslint-disable-line
@@ -17,6 +19,9 @@ let listenToSocket = (socketUrl) => {
     });
     searchesSocket.on('broadcast', (searchResult) => {
         console.log('received searchResult', searchResult)
+
+        // Update graph
+        searchHits.update(searchResult);
 
         const component = new SearchResultComponent(searchResult);
         searchResultsContainer.appendChild(component.element);
@@ -31,4 +36,4 @@ let listenToSocket = (socketUrl) => {
 
 listenToSocket('http://10.64.16.97:22222/');
 
-const tryThingsOutSvg = d3.select("#trying-things-out").append("svg"); //eslint-disable-line
+// const tryThingsOutSvg = d3.select("#trying-things-out").append("svg"); //eslint-disable-line
