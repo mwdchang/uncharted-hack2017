@@ -103,3 +103,7 @@ body {
 button {
   font-size: 18px;
 }
+
+.svg {
+  overflow: visible;
+}
