@@ -8,7 +8,7 @@
 }
 
 .search-result:not(:last-child) {
-    border-bottom: 1px solid hsl(0, 0%, 60%);
+    border-bottom: 1px solid hsl(0, 0%, 65%);
 }
 
 .search-result .hits-summary {
@@ -17,6 +17,7 @@
 
 .term {
     font-weight: bold;
+    max-width: 30em;
 }
 
 .timestamp {
