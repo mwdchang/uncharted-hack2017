@@ -38,6 +38,7 @@ cp -r ./ui/build $PACKAGE/ui/
 echo "Copying server files..."
 echo "===================="
 cp -v server.js $PACKAGE/server.js
+cp -v distribution.json $PACKAGE/distribution.json
 cp -v package.json $PACKAGE/package.json
 
 
