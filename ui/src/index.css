@@ -12,11 +12,13 @@ body {
 
 .left-pane {
   flex-grow: 2;
-  background-color: hsl(235, 5%, 50%);
+  /* background-color: hsl(235, 95%, 60%); */
+  background-color: rgb(242, 242, 242);
 }
 
 .right-pane {
-  background-color: hsl(235, 5%, 60%);
+  /* background-color: hsl(235, 95%, 60%); */
+  background-color: rgb(242, 242, 242);
   border-left: 2px solid hsl(0, 0%, 40%);
   padding-left: 0.5em;
 }

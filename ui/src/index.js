@@ -17,28 +17,39 @@ const distributionGraphComponent = new DistributionGraphComponent();
 
 let lastTwentySearchResultComponents = [];
 
+/*
+fetch('http://10.64.16.97:22222/api/distribution').then(d => d.json()).then( d => {
+  console.log('!!!!!!!!', d);
+  alert(JSON.stringify(d));
+});
+*/
+
 let listenToSocket = (socketUrl) => {
     const searchesSocket = io(socketUrl); //eslint-disable-line
 
-    searchesSocket.on('connect', () =>{
+    searchesSocket.on('connect', () => {
         console.log('connected to searches socket')
     });
-    searchesSocket.on('broadcast', (searchResult) => {
-        console.log('received searchResult', searchResult)
+    searchesSocket.on('broadcast', (data) => {
+        console.log('received searchResult', data)
 
         // Update graph
-        searchHits.update(searchResult);
+        if (data.type === 'search') {
+          let searchResult = data.data;
 
-        const component = new SearchResultComponent(searchResult);
-        searchResultsContainer.appendChild(component.element);
+          searchHits.update(searchResult);
 
-        lastTwentySearchResultComponents.push(component.element);
-        lastTwentySearchResultComponents = lastTwentySearchResultComponents.slice(-20);
+          const component = new SearchResultComponent(searchResult);
+          searchResultsContainer.appendChild(component.element);
 
-        const childrenToRemove = [...searchResultsContainer.children].filter(child => lastTwentySearchResultComponents.indexOf(child) === -1);
-        childrenToRemove.forEach(child => {
-            searchResultsContainer.removeChild(child);
-        });
+          lastTwentySearchResultComponents.push(component.element);
+          lastTwentySearchResultComponents = lastTwentySearchResultComponents.slice(-20);
+
+          const childrenToRemove = [...searchResultsContainer.children].filter(child => lastTwentySearchResultComponents.indexOf(child) === -1);
+          childrenToRemove.forEach(child => {
+              searchResultsContainer.removeChild(child);
+          });
+        }
 
         //distributionGraphComponent.update()
     });

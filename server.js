@@ -9,6 +9,7 @@ const express = require('express')
 const app = require('express')()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
+const cors = require('cors')
 
 
 // ES stuff
@@ -159,6 +160,7 @@ io.on('event', (data) => {
 
 
 
+app.use(cors())
 app.use(express.static('ui/build'))
 
 app.get('/api/distribution', (req, res) => {
