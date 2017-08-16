@@ -23,7 +23,7 @@ body {
   padding-left: 0.5em;
 }
 
-#search-results-container, #filtered-slide-out-pane {
+#search-results-container, #filtered-search-results-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
