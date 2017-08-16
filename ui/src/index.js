@@ -1,12 +1,19 @@
 import './index.css';
 import SearchResultComponent from './components/search-result-component';
+import FilteredSearchResultsComponent from './components/filtered-search-results-component';
 import SearchHits from './search-hits';
 import DistributionGraphComponent from './components/distribution-graph-component';
+import SearchFilter from './search-filter';
+
 
 const searchResultsContainer = document.getElementById('search-results-container');
+const filteredSearchResultsContainer = document.getElementById('filtered-search-results-container');
 
 if (!searchResultsContainer) {
     throw new Error('couldn\t find the searchResultsContainer element');
+}
+if (!filteredSearchResultsContainer) {
+    throw new Error('couldn\t find the filteredSearchResultsContainer element');
 }
 
 
@@ -24,7 +31,7 @@ fetch('http://10.64.16.97:22222/api/distribution').then(d => d.json()).then( d =
 });
 */
 
-let listenToSocket = (socketUrl) => {
+let listenToSocket = (socketUrl, searchFilter) => {
     const searchesSocket = io(socketUrl); //eslint-disable-line
 
     searchesSocket.on('connect', () => {
@@ -35,20 +42,22 @@ let listenToSocket = (socketUrl) => {
 
         // Update graph
         if (data.type === 'search') {
-          let searchResult = data.data;
+            let searchResult = data.data;
 
-          searchHits.update(searchResult);
+            searchHits.update(searchResult);
 
-          const component = new SearchResultComponent(searchResult);
-          searchResultsContainer.appendChild(component.element);
+            const component = new SearchResultComponent(searchResult);
+            searchResultsContainer.appendChild(component.element);
 
-          lastTwentySearchResultComponents.push(component.element);
-          lastTwentySearchResultComponents = lastTwentySearchResultComponents.slice(-20);
+            lastTwentySearchResultComponents.push(component.element);
+            lastTwentySearchResultComponents = lastTwentySearchResultComponents.slice(-20);
 
-          const childrenToRemove = [...searchResultsContainer.children].filter(child => lastTwentySearchResultComponents.indexOf(child) === -1);
-          childrenToRemove.forEach(child => {
-              searchResultsContainer.removeChild(child);
-          });
+            const childrenToRemove = [...searchResultsContainer.children].filter(child => lastTwentySearchResultComponents.indexOf(child) === -1);
+            childrenToRemove.forEach(child => {
+                searchResultsContainer.removeChild(child);
+            });
+
+            searchFilter.processSearchResult(searchResult);
         }
 
         //distributionGraphComponent.update()
@@ -58,4 +67,31 @@ let listenToSocket = (socketUrl) => {
     });
 };
 
-listenToSocket('http://10.64.16.97:22222/');
+const searchFilter =  new SearchFilter();
+listenToSocket('http://10.64.16.97:22222/', searchFilter);
+
+let setupRightPane = () => {
+    searchFilter.filters.forEach(filter => {
+        let component = new FilteredSearchResultsComponent(filter);
+        filteredSearchResultsContainer.appendChild(component.element);
+    });
+
+    // Logic for switching between the search result panes
+    filteredSearchResultsContainer.classList.add('hidden');
+
+    const switchSearchResultsButton = document.getElementById('switch-search-results');
+    if (!switchSearchResultsButton) {
+        throw new Error('couldn\t find the switchSearchResultsButton element');
+    }
+
+    switchSearchResultsButton.onclick = () => {
+        if (searchResultsContainer.classList.contains('hidden')) {
+            searchResultsContainer.classList.remove('hidden');
+            filteredSearchResultsContainer.classList.add('hidden');
+        } else {
+            searchResultsContainer.classList.add('hidden');
+            filteredSearchResultsContainer.classList.remove('hidden');
+        }
+    };
+};
+setupRightPane();

@@ -23,7 +23,7 @@ body {
   padding-left: 0.5em;
 }
 
-#search-results-container {
+#search-results-container, #filtered-slide-out-pane {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -32,6 +32,14 @@ body {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+#filtered-search-results-container .header {
+  font-weight: bold;
+}
+
+#search-results-container.hidden, #filtered-search-results-container.hidden {
+  display: none;
 }
 
 .graph-container {
