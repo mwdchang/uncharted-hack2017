@@ -17,6 +17,13 @@ const HOST = 'http://10.64.16.97:9200'
 const INDEX = 'catalog-1'
 const client = es.Client({ host: HOST, log: 'error' })
 
+// Misc
+const _ = require('lodash')
+
+
+// Cache
+const distribution = JSON.parse(fs.readFileSync('distribution.json', 'utf-8'))
+
 socket.on('open', ()=> {
    console.log('connected...')
 })
@@ -91,9 +98,22 @@ socket.on('message', (evt)=> {
      function(response) {
        // console.log(response.hits)
        let results = response.hits.hits.map( d => d._source );
+       let matches = [];
+       let subjects = [];
        results.forEach( r => {
-         console.log('> ', r.p_title)
+         // console.log('> ', r.p_title)
+         matches.push(r.p_title[0])
+         subjects = subjects.concat(r.p_subject)
        })
+
+       console.log('!!!', matches)
+       console.log('!!!', subjects)
+
+       searchData.matches = matches
+       searchData.subjects = _.uniq(subjects)
+
+
+       io.emit('broadcast', searchData)
 
        // res.statusCode = 200;
        // res.json(_metric.formatMetricList(response));
@@ -105,7 +125,7 @@ socket.on('message', (evt)=> {
 
 
    // console.log(JSON.stringify(searchData, true, 1));
-   io.emit('broadcast', searchData);
+   // io.emit('broadcast', searchData);
 })
 
 io.on('connection', (socket)=> {
@@ -123,6 +143,7 @@ io.on('event', (data) => {
 app.use(express.static('ui/build'))
 
 app.get('/api/distribution', (req, res) => {
+  /*
   let dummy = [
     {subject: 'orange', value: 0.1},
     {subject: 'apple', value: 0.1},
@@ -132,8 +153,9 @@ app.get('/api/distribution', (req, res) => {
     {subject: 'computer', value: 0.3},
     {subject: 'music', value: 0.1}
   ];
+  */
   res.statuscode = 200;
-  res.json(dummy);
+  res.json(distribution);
 })
 
 app.get('/xyz', (req, res) => {
