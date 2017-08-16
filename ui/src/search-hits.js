@@ -38,7 +38,7 @@ export default class SearchHits {
       .offset(function() {
         return [this.getBBox().height/2, 0]
       })
-      .html(function(d) { return d.value; });
+      .html(function(d, i) { return 'Number of searches resulting in ' + i + ' matches:' + d.value; });
     bars.call(tip);
     bars.append('rect')
       .classed('bar', true)
@@ -60,6 +60,8 @@ export default class SearchHits {
 
   update(searchResult) {
     let matches = searchResult.matches.length;
+    if (matches === 0) return;
+
     this.history[+matches].value ++;
     this.updateRender();
   }

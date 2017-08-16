@@ -39,7 +39,7 @@ reader.on('end', ()=> {
 		total += distribution[key]
 	})
   let results = _.orderBy(list, [d => -d.value]);
-	results = _.take(results, 10);
+	results = _.take(results, 100);
 
   console.log(JSON.stringify({
 		total: total,
