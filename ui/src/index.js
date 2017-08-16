@@ -10,6 +10,7 @@ if (!searchResultsContainer) {
 
 const browserCounts = new Map();
 const searchHits = new SearchHits('search-hits');
+let lastTwentySearchResultComponents = [];
 
 let listenToSocket = (socketUrl) => {
     const searchesSocket = io(socketUrl); //eslint-disable-line
@@ -26,8 +27,13 @@ let listenToSocket = (socketUrl) => {
         const component = new SearchResultComponent(searchResult);
         searchResultsContainer.appendChild(component.element);
 
-        const countForBrowser = browserCounts.get(searchResult.browser) || 0;
-        browserCounts.set(searchResult.browser, countForBrowser + 1);
+        lastTwentySearchResultComponents.push(component.element);
+        lastTwentySearchResultComponents = lastTwentySearchResultComponents.slice(-20);
+
+        const childrenToRemove = [...searchResultsContainer.children].filter(child => lastTwentySearchResultComponents.indexOf(child) === -1);
+        childrenToRemove.forEach(child => {
+            searchResultsContainer.removeChild(child);
+        });
     });
     searchesSocket.on('disconnect', () => {
         console.log('disconnected from searches socket')
@@ -35,5 +41,3 @@ let listenToSocket = (socketUrl) => {
 };
 
 listenToSocket('http://10.64.16.97:22222/');
-
-// const tryThingsOutSvg = d3.select("#trying-things-out").append("svg"); //eslint-disable-line
