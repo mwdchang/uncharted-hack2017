@@ -10,7 +10,7 @@ export default class SearchResultComponent {
         const mainElement = document.createElement('li');
         mainElement.classList.add('search-result');
 
-        if (matches.length <= 5) {
+        if (matches && matches.length <= 5) {
             mainElement.classList.add('low-stock');
         }
 

@@ -59,6 +59,9 @@ export default class SearchHits {
   }
 
   update(searchResult) {
+    if (!searchResult.matches) {
+      return;
+    }
     let matches = searchResult.matches.length;
     this.history[+matches].value ++;
     this.updateRender();

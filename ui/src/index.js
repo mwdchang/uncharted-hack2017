@@ -24,12 +24,6 @@ const distributionGraphComponent = new DistributionGraphComponent();
 
 let lastTwentySearchResultComponents = [];
 
-/*
-fetch('http://10.64.16.97:22222/api/distribution').then(d => d.json()).then( d => {
-  console.log('!!!!!!!!', d);
-  alert(JSON.stringify(d));
-});
-*/
 
 let listenToSocket = (socketUrl, searchFilter) => {
     const searchesSocket = io(socketUrl); //eslint-disable-line
@@ -60,7 +54,9 @@ let listenToSocket = (socketUrl, searchFilter) => {
             searchFilter.processSearchResult(searchResult);
         }
 
-        //distributionGraphComponent.update()
+        if (data.type === 'rt-distribution') {
+            distributionGraphComponent.update(data.data);
+        }
     });
     searchesSocket.on('disconnect', () => {
         console.log('disconnected from searches socket')

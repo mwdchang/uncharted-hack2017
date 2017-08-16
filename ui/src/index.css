@@ -54,4 +54,6 @@ body {
 
 .svg {
   overflow: visible;
+  position: absolute;
+  left: 40px;
 }
