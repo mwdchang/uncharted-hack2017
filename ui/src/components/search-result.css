@@ -1,11 +1,14 @@
 .search-result {
-  display: flex;
-  flex-direction: column;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
 
-  min-height: 3em;
-  margin-bottom: 0.5em;
+    min-height: 3em;
+    margin-bottom: 0.5em;
+}
 
-  background-color: hsl(100, 10%, 70%);
+.search-result .hits-summary {
+    cursor: pointer;
 }
 
 .term {
@@ -14,4 +17,39 @@
 
 .timestamp {
     font-size: 0.75em;
+}
+
+.hits-details-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.hits-details-container.collapsed {
+    height: 0;
+    opacity: 0;
+
+    transition: height 0.25s opacity 0.25s;
+}
+
+.hits-details-container > .hit {
+    margin-right: 0.25em;
+    background-color: hsla(0, 0%, 100%, 0.15);
+}
+
+.hits-details-container > .hit > .title {
+    text-align: center;
+}
+
+.hits-details-container > .hit > .subjects-container {
+    display: flex;
+}
+
+.hits-details-container > .hit > .subjects-container .subject {
+    font-size: 0.75em;
+
+    padding: 0 0.35em;
+    background-color: hsl(200, 20%, 85%);
+
+    border-radius: 10px;
+    border: 1px solid white;
 }

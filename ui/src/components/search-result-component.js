@@ -12,6 +12,7 @@ export default class SearchResultComponent {
         mainElement.appendChild(this._searchTerm(terms));
         mainElement.appendChild(this._timestamp(timestamp));
         mainElement.appendChild(this._hitsSummary(hits));
+        mainElement.appendChild(this._hitsDetails(hits));
 
         this.element = mainElement;
     }
@@ -40,6 +41,56 @@ export default class SearchResultComponent {
         hitsSummaryElement.classList.add('hits-summary');
         hitsSummaryElement.textContent = `${hits.length} results`;
 
+        hitsSummaryElement.onclick = () => {
+            this._toggleHitsDetailsExpanded();
+        }
+
         return hitsSummaryElement;
+    }
+
+    _hitsDetails(hits) {
+        const hitsDetailsContainerElement = document.createElement('div');
+        hitsDetailsContainerElement.classList.add('hits-details-container', 'collapsed');
+
+        this._hitsDetailsContainerElement = hitsDetailsContainerElement;
+
+        hits.map(hit => {
+            const hitsDetailsElement = document.createElement('div');
+            hitsDetailsElement.classList.add('hit');
+
+            const hitsTitle = document.createElement('div');
+            hitsTitle.classList.add('title');
+            hitsTitle.textContent = hit.title;
+
+            hitsDetailsElement.appendChild(hitsTitle);
+
+            const subjectsContainer = document.createElement('div');
+            subjectsContainer.classList.add('subjects-container');
+
+            hitsDetailsElement.appendChild(subjectsContainer);
+
+            hit.subject.map(subject => {
+                const subjectSpan = document.createElement('span');
+                subjectSpan.classList.add('subject');
+                subjectSpan.textContent = subject;
+
+                return subjectSpan;
+            }).forEach(subjectSpan => subjectsContainer.appendChild(subjectSpan));
+
+            return hitsDetailsElement;
+        }).forEach(hitElement => hitsDetailsContainerElement.appendChild(hitElement));
+
+        return hitsDetailsContainerElement;
+    }
+
+    _toggleHitsDetailsExpanded() {
+        this._hitsDetailsExpanded = !this._hitsDetailsExpanded;
+        if (this._hitsDetailsContainerElement.classList.contains('collapsed')) {
+            this._hitsDetailsContainerElement.classList.add('expanded');
+            this._hitsDetailsContainerElement.classList.remove('collapsed');
+        } else {
+            this._hitsDetailsContainerElement.classList.remove('expanded');
+            this._hitsDetailsContainerElement.classList.add('collapsed');
+        }
     }
 }
