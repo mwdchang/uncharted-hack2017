@@ -11,16 +11,16 @@ let listenToSocket = (socketUrl) => {
     const searchesSocket = io(socketUrl); //eslint-disable-line
 
     searchesSocket.on('connect', () =>{
-        console.log('connect')
+        console.log('connected to searches socket')
     });
     searchesSocket.on('broadcast', (searchResult) => {
-        console.log('event', searchResult)
+        console.log('received searchResult', searchResult)
 
         const component = new SearchResultComponent(searchResult);
         searchResultsContainer.appendChild(component.element);
     });
     searchesSocket.on('disconnect', () => {
-        console.log('disconnect')
+        console.log('disconnected from searches socket')
     });
 };
 

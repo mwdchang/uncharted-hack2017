@@ -31,7 +31,7 @@ export default class SearchResultComponent {
 
         const date = new Date(timestamp);
 
-        timestampElement.textContent = date;
+        timestampElement.textContent = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 
         return timestampElement;
     }
