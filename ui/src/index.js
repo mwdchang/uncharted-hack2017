@@ -85,7 +85,7 @@ listenToSocket('http://10.64.16.97:22222/', searchFilter);
 let relatedSubjects;
 setTimeout(() => {
     relatedSubjects = new RelatedSubjectsComponent('floaty-graph', transformSearchResultsToGraph(listOfSearchResults));
-}, 10000);
+}, 5000);
 
 let setupRightPane = () => {
     searchFilter.filters.forEach(filter => {

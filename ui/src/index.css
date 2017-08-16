@@ -5,10 +5,12 @@ body {
 }
 
 #floaty-graph {
+  /*
   top: 0;
   position: absolute;
   width: 600px;
   height: 600px;
+  */
 }
 
 .main-view {

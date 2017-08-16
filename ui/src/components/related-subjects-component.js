@@ -45,14 +45,16 @@ export default class RelatedSubjectsComponent {
         this._target = target;
         this._graphData = graphData;
 
-        this._width = 400;
-        this._height = 400;
+        this._width = 200;
+        this._height = 200;
 
         this._init();
     }
 
     _init() {
         this._svg = d3.select(`#${this._target}`).select('svg');
+        this._svg.selectAll('*').remove();
+
 
         this._simulation = d3.forceSimulation()
             .force("link", d3.forceLink().id(function(d) {
