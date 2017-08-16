@@ -39,6 +39,9 @@ reader.on('line', (line) => {
   if (r.p_date.length > 1) { r.p_date = [r.p_date[0]] }
   if (r.p_date_general.length > 1) { r.p_date_general = [r.p_date_general[0]] }
 
+  // Sanity
+  if (r.p_title.length === 0 || r.p_author.length === 0) return
+
   // Compute
   r.p_subject.forEach( d => {
     if (distribution.hasOwnProperty(d) === false) distribution[d] = 0

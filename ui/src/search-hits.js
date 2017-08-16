@@ -4,14 +4,16 @@ export default class SearchHits {
 
   constructor(target) {
     this.history = [];
-    for (let i=0; i <= 10; i++) {
+    this.max = 20;
+
+    for (let i=0; i <= this.max; i++) {
       this.history.push({
         value: 0
       })
     }
     this.target = target;
 
-    this.barWidth = 1000 / 11;
+    this.barWidth = 1000 / (this.max+1);
     this.padding = 2;
     this.init();
   }
@@ -29,14 +31,20 @@ export default class SearchHits {
       });
 
 
+
+
     console.log('!!!', this.barWidth)
+    let tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.value; });
+    bars.call(tip);
     bars.append('rect')
       .classed('bar', true)
       .attr('x', this.padding)
       .attr('y', 200)
       .attr('width', this.barWidth - 2*this.padding)
       .attr('height', 0)
-      .style('fill', '#369');
+      .style('fill', '#369')
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide);
 
     svg.append('rect')
       .attr('x', 0)

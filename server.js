@@ -43,7 +43,7 @@ socket.on('message', (evt)=> {
      index: INDEX,
      type: 'item',
      body: {
-       size: 10,
+       size: 20,
        query: {
          bool: {
            should: [
