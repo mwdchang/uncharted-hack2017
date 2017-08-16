@@ -1,11 +1,14 @@
 import './index.css';
 import SearchResultComponent from './components/search-result-component';
+import DistributionGraphComponent from './components/distribution-graph-component';
 
 const searchResultsContainer = document.getElementById('search-results-container');
 
 if (!searchResultsContainer) {
     throw new Error('couldn\t find the searchResultsContainer element');
 }
+
+const distributionGraphComponent = new DistributionGraphComponent();
 
 let lastTwentySearchResultComponents = [];
 
@@ -29,6 +32,8 @@ let listenToSocket = (socketUrl) => {
         childrenToRemove.forEach(child => {
             searchResultsContainer.removeChild(child);
         });
+
+        //distributionGraphComponent.update()
     });
     searchesSocket.on('disconnect', () => {
         console.log('disconnected from searches socket')
