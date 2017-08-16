@@ -15,7 +15,7 @@ const cors = require('cors')
 // ES stuff
 const es = require('elasticsearch')
 const HOST = 'http://10.64.16.97:9200'
-const INDEX = 'catalog-1'
+const INDEX = 'catalog-2'
 const client = es.Client({ host: HOST, log: 'error' })
 
 // Misc
