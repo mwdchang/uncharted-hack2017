@@ -4,6 +4,7 @@ import FilteredSearchResultsComponent from './components/filtered-search-results
 import SearchHits from './search-hits';
 import DistributionGraphComponent from './components/distribution-graph-component';
 import SearchFilter from './search-filter';
+import RelatedSubjectsComponent, { transformSearchResultsToGraph } from './components/related-subjects-component';
 
 
 const searchResultsContainer = document.getElementById('search-results-container');
@@ -17,8 +18,7 @@ if (!filteredSearchResultsContainer) {
 }
 
 
-const browserCounts = new Map();
-const searchHits = new SearchHits('search-hits');
+// const searchHits = new SearchHits('search-hits');
 const distributionGraphComponent = new DistributionGraphComponent();
 
 
@@ -30,6 +30,8 @@ fetch('http://10.64.16.97:22222/api/distribution').then(d => d.json()).then( d =
   alert(JSON.stringify(d));
 });
 */
+
+let listOfSearchResults = [];
 
 let listenToSocket = (socketUrl, searchFilter) => {
     const searchesSocket = io(socketUrl); //eslint-disable-line
@@ -44,7 +46,7 @@ let listenToSocket = (socketUrl, searchFilter) => {
         if (data.type === 'search') {
             let searchResult = data.data;
 
-            searchHits.update(searchResult);
+            // searchHits.update(searchResult);
 
             const component = new SearchResultComponent(searchResult);
             searchResultsContainer.appendChild(component.element);
@@ -58,6 +60,8 @@ let listenToSocket = (socketUrl, searchFilter) => {
             });
 
             searchFilter.processSearchResult(searchResult);
+
+            listOfSearchResults.push(searchResult);
         }
 
         //distributionGraphComponent.update()
@@ -69,6 +73,11 @@ let listenToSocket = (socketUrl, searchFilter) => {
 
 const searchFilter =  new SearchFilter();
 listenToSocket('http://10.64.16.97:22222/', searchFilter);
+
+let relatedSubjects;
+setTimeout(() => {
+    relatedSubjects = new RelatedSubjectsComponent('floaty-graph', transformSearchResultsToGraph(listOfSearchResults));
+}, 10000);
 
 let setupRightPane = () => {
     searchFilter.filters.forEach(filter => {
