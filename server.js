@@ -4,6 +4,7 @@ const SERVER = 'ws://45.55.209.67:4571/rtsearches'
 const WS = require('ws')
 const fs = require('fs')
 const socket = new WS(SERVER)
+const express = require('express')
 const app = require('express')()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
@@ -40,6 +41,9 @@ io.on('event', (data) => {
 })
 
 
+
+app.use(express.static('ui/build'))
+
 app.get('/distribution', (req, res) => {
   let dummy = [
     {subject: 'orange', value: 0.1},
@@ -54,11 +58,14 @@ app.get('/distribution', (req, res) => {
   res.json(dummy);
 })
 
-
-
 app.get('/xyz', (req, res) => {
    res.statuscode = 200
    res.json({xyz: 'hello'})
 });
+
+app.get('/', (req, res) => {
+  res.sendFile('/index.html');
+})
+
 
 server.listen(22222)
