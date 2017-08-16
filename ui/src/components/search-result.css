@@ -1,0 +1,17 @@
+.search-result {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 3em;
+  margin-bottom: 0.5em;
+
+  background-color: hsl(100, 10%, 70%);
+}
+
+.term {
+    font-weight: bold;
+}
+
+.timestamp {
+    font-size: 0.75em;
+}
