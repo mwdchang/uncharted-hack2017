@@ -10,6 +10,10 @@ export default class SearchResultComponent {
         const mainElement = document.createElement('li');
         mainElement.classList.add('search-result');
 
+        if (matches.length <= 5) {
+            mainElement.classList.add('low-stock');
+        }
+
         mainElement.appendChild(this._searchTerm(terms));
         mainElement.appendChild(this._timestamp(timestamp));
         mainElement.appendChild(this._matchesSummary(matches));
@@ -42,8 +46,10 @@ export default class SearchResultComponent {
         matchesSummaryElement.classList.add('matches-summary');
         matchesSummaryElement.textContent = `${matches.length} results`;
 
-        matchesSummaryElement.onclick = () => {
-            this._toggleHitsDetailsExpanded();
+        if (matches.length > 0) {
+            matchesSummaryElement.onclick = () => {
+                this._toggleHitsDetailsExpanded();
+            }
         }
 
         return matchesSummaryElement;
