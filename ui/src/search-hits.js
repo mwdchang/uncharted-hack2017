@@ -34,7 +34,11 @@ export default class SearchHits {
 
 
     console.log('!!!', this.barWidth)
-    let tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.value; });
+    let tip = d3.tip().attr('class', 'd3-tip')
+      .offset(function() {
+        return [this.getBBox().height/2, 0]
+      })
+      .html(function(d) { return d.value; });
     bars.call(tip);
     bars.append('rect')
       .classed('bar', true)

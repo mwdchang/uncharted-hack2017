@@ -68,6 +68,7 @@ socket.on('message', (evt)=> {
 
 
              // Should 1: title
+             /*
              {
                match : {
                  p_title: {
@@ -76,13 +77,14 @@ socket.on('message', (evt)=> {
                  }
                }
              },
+             */
 
              // Should 2: subject
              {
                match:  {
                  p_subject: {
                    query: searchData.terms,
-                   operator: 'or'
+                   operator: 'and'
                  }
                }
              }
