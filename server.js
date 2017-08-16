@@ -44,7 +44,7 @@ io.on('event', (data) => {
 
 app.use(express.static('ui/build'))
 
-app.get('/distribution', (req, res) => {
+app.get('/api/distribution', (req, res) => {
   let dummy = [
     {subject: 'orange', value: 0.1},
     {subject: 'apple', value: 0.1},
