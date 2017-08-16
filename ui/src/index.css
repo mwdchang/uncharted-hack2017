@@ -1,0 +1,21 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.main-view {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
+.left-pane {
+  flex-grow: 1;
+  background-color: hsl(10, 10%, 80%);
+}
+
+.right-pane {
+  flex-grow: 1;
+  background-color: hsl(40, 10%, 80%);
+}
