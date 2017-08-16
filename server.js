@@ -37,13 +37,33 @@ socket.on('message', (evt)=> {
 
    client.search({
      index: INDEX,
-     type: 'metric',
+     type: 'item',
      body: {
        size: 10,
        query: {
          bool: {
            should: [
-             // Should # 1
+
+             {
+               match_phrase : {
+                 p_title: {
+                   query: searchData.terms,
+                   boost: 3
+                 }
+               }
+             },
+
+             {
+               match_phrase : {
+                 p_author: {
+                   query: searchData.terms,
+                   boost: 2
+                 }
+               }
+             },
+
+
+             // Should 1: title
              {
                match : {
                  p_title: {
@@ -51,8 +71,17 @@ socket.on('message', (evt)=> {
                    operator: 'or'
                  }
                }
-             }
+             },
 
+             // Should 2: subject
+             {
+               match:  {
+                 p_subject: {
+                   query: searchData.terms,
+                   operator: 'or'
+                 }
+               }
+             }
 
            ]
          }
@@ -60,7 +89,12 @@ socket.on('message', (evt)=> {
      }
    }).then(
      function(response) {
-       console.log(response.hits)
+       // console.log(response.hits)
+       let results = response.hits.hits.map( d => d._source );
+       results.forEach( r => {
+         console.log('> ', r.p_title)
+       })
+
        // res.statusCode = 200;
        // res.json(_metric.formatMetricList(response));
      },

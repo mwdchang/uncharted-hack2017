@@ -29,11 +29,11 @@ let add = (bulk, data) =>  {
 reader.on('line', (line) => {
   c++;
   add(bulk, JSON.parse(line))
-	console.log('line', line);
+	// console.log('line', line);
 
   if (c % BATCH === 0) {
     reader.pause()
-	console.log('hi');
+	// console.log('hi');
     client.bulk({index: INDEX, body: bulk}, (err, res)=> {
       console.log('Processed ', c)
       if (err) { console.log('error', err) }
