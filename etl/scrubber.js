@@ -6,7 +6,7 @@ const fs = require('fs')
 const args = process.argv
 
 if (args.length < 3) {
-  console.log('Oops.... node ./scrubber <input> [limit]')
+  console.error('Oops.... node ./scrubber <input> [limit]')
   process.exit(1)
 }
 
@@ -51,6 +51,6 @@ reader.on('line', (line) => {
 })
 
 reader.on('end', ()=> {
-  console.log('all done')
-  console.log(JSON.stringify(distribution, true, 2))
+  console.error('all done')
+  console.error(JSON.stringify(distribution, true, 2))
 })
