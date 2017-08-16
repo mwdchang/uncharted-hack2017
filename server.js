@@ -1,5 +1,6 @@
 'use strict'
 
+// Server and web socket stuff
 const SERVER = 'ws://45.55.209.67:4571/rtsearches'
 const WS = require('ws')
 const fs = require('fs')
@@ -8,6 +9,13 @@ const express = require('express')
 const app = require('express')()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
+
+
+// ES stuff
+const es = require('elasticsearch')
+const HOST = 'http://10.64.16.97:9200'
+const INDEX = 'catalog-1'
+const client = es.Client({ host: HOST, log: 'error' })
 
 socket.on('open', ()=> {
    console.log('connected...')
@@ -26,6 +34,42 @@ socket.on('message', (evt)=> {
      {title: 'title 2', subject:['orange', 'apple',]},
      {title: 'title 3', subject:['orange', 'apple', 'coffee', 'music']}
    ]
+
+   client.search({
+     index: INDEX,
+     type: 'metric',
+     body: {
+       size: 10,
+       query: {
+         bool: {
+           should: [
+             // Should # 1
+             {
+               match : {
+                 p_title: {
+                   query: searchData.terms,
+                   operator: 'or'
+                 }
+               }
+             }
+
+
+           ]
+         }
+       }
+     }
+   }).then(
+     function(response) {
+       console.log(response.hits)
+       // res.statusCode = 200;
+       // res.json(_metric.formatMetricList(response));
+     },
+     function(error) {
+       console.log('doh !!!!', error)
+     }
+   );
+
+
    // console.log(JSON.stringify(searchData, true, 1));
    io.emit('broadcast', searchData);
 })
