@@ -17,6 +17,7 @@ body {
 }
 
 .right-pane {
+  width: 30vw;
   /* background-color: hsl(235, 95%, 60%); */
   background-color: rgb(242, 242, 242);
   border-left: 2px solid hsl(0, 0%, 40%);
