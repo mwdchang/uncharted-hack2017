@@ -4,6 +4,15 @@ body {
   font-family: sans-serif;
 }
 
+#floaty-graph {
+  /*
+  top: 0;
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  */
+}
+
 .main-view {
   display: flex;
   flex-direction: row;
@@ -17,6 +26,7 @@ body {
 }
 
 .right-pane {
+  width: 30vw;
   /* background-color: hsl(235, 95%, 60%); */
   background-color: rgb(242, 242, 242);
   border-left: 2px solid hsl(0, 0%, 40%);
@@ -50,6 +60,48 @@ body {
 #graph {
   height: 100%;
   text-align: center;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #111;
+  z-index: 200;
+  display: none;
+  align-items:center;
+  justify-content: center;
+  opacity: 0.75;
+}
+
+.modal-panel {
+  padding: 1rem;
+  background: #EFEFEF;
+  border: 2px solid #444;
+  border-radius: 2rem;
+  opacity: 0.7;
+  position: relative;
+  display: block;
+  width: 50%;
+  min-height: 10rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.toggle-modal {
+  font-size: 15px;
+  padding: 5px;
+  border: 1px solid #333;
+  border-radius: 2px;
+  margin-right: 2rem;
+  cursor: pointer;
+}
+
+button {
+  font-size: 18px;
 }
 
 .svg {

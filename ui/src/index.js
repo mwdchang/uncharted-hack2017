@@ -1,9 +1,11 @@
+/* global d3 */
 import './index.css';
 import SearchResultComponent from './components/search-result-component';
 import FilteredSearchResultsComponent from './components/filtered-search-results-component';
 import SearchHits from './search-hits';
 import DistributionGraphComponent from './components/distribution-graph-component';
 import SearchFilter from './search-filter';
+import RelatedSubjectsComponent, { transformSearchResultsToGraph } from './components/related-subjects-component';
 
 
 const searchResultsContainer = document.getElementById('search-results-container');
@@ -17,13 +19,27 @@ if (!filteredSearchResultsContainer) {
 }
 
 
-const browserCounts = new Map();
 const searchHits = new SearchHits('search-hits');
 const distributionGraphComponent = new DistributionGraphComponent();
 
 
 let lastTwentySearchResultComponents = [];
 
+d3.select('button').on('click', ()=> {
+  d3.select('.modal-overlay').style('display', 'none');
+})
+
+d3.select('.toggle-modal').on('click', ()=> {
+  d3.select('.modal-overlay').style('display', 'flex');
+})
+/*
+fetch('http://10.64.16.97:22222/api/distribution').then(d => d.json()).then( d => {
+  console.log('!!!!!!!!', d);
+  alert(JSON.stringify(d));
+});
+*/
+
+let listOfSearchResults = [];
 
 let listenToSocket = (socketUrl, searchFilter) => {
     const searchesSocket = io(socketUrl); //eslint-disable-line
@@ -52,6 +68,8 @@ let listenToSocket = (socketUrl, searchFilter) => {
             });
 
             searchFilter.processSearchResult(searchResult);
+
+            listOfSearchResults.push(searchResult);
         }
 
         if (data.type === 'rt-distribution') {
@@ -65,6 +83,11 @@ let listenToSocket = (socketUrl, searchFilter) => {
 
 const searchFilter =  new SearchFilter();
 listenToSocket('http://10.64.16.97:22222/', searchFilter);
+
+// let relatedSubjects;
+// setTimeout(() => {
+//     relatedSubjects = new RelatedSubjectsComponent('floaty-graph', transformSearchResultsToGraph(listOfSearchResults));
+// }, 5000);
 
 let setupRightPane = () => {
     searchFilter.filters.forEach(filter => {

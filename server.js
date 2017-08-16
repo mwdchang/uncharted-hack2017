@@ -15,7 +15,7 @@ const cors = require('cors')
 // ES stuff
 const es = require('elasticsearch')
 const HOST = 'http://10.64.16.97:9200'
-const INDEX = 'catalog-1'
+const INDEX = 'catalog-2'
 const client = es.Client({ host: HOST, log: 'error' })
 
 // Misc
@@ -66,7 +66,6 @@ socket.on('message', (evt)=> {
                }
              },
 
-
              // Should 1: title
              /*
              {
@@ -87,6 +86,16 @@ socket.on('message', (evt)=> {
                    operator: 'and'
                  }
                }
+             },
+
+
+             {
+               match:  {
+                 p_author: {
+                   query: searchData.terms,
+                   operator: 'or'
+                 }
+               }
              }
 
            ]
@@ -105,10 +114,6 @@ socket.on('message', (evt)=> {
          subjects = subjects.concat(r.p_subject)
        })
 
-       /*
-       console.log('!!!', matches)
-       console.log('!!!', subjects)
-       */
 
        searchData.matches = matches
        searchData.subjects = _.uniq(subjects)
@@ -131,7 +136,7 @@ socket.on('message', (evt)=> {
      		 })
      	 })
        let rtResults = _.orderBy(list, [d => -d.value]);
-     	 rtResults = _.take(rtResults, 10);
+     	 rtResults = _.take(rtResults, 100);
        let payload = {
          total: totalSearch,
          distribution: rtResults
@@ -166,17 +171,6 @@ app.use(cors())
 app.use(express.static('ui/build'))
 
 app.get('/api/distribution', (req, res) => {
-  /*
-  let dummy = [
-    {subject: 'orange', value: 0.1},
-    {subject: 'apple', value: 0.1},
-    {subject: 'grape', value: 0.2},
-    {subject: 'coffee', value: 0.2},
-    {subject: 'mouse', value: 0.1},
-    {subject: 'computer', value: 0.3},
-    {subject: 'music', value: 0.1}
-  ];
-  */
   res.statuscode = 200;
   res.json(distribution);
 })
