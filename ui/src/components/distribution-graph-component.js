@@ -60,6 +60,7 @@ export default class DistributionGraphComponent {
   initializeGraph() {
     this.svg = d3.select('#distribution').select('svg');
     this.tip = d3.tip().attr('class', 'd3-tip');
+    this.tip2 = d3.tip().attr('class', 'd3-tip');
 
     this.tip
       .offset(function() {
@@ -73,12 +74,24 @@ export default class DistributionGraphComponent {
         </div>`; });
 
 
+    this.tip2
+      .offset(function() {
+        return [this.getBBox().height/2, 0]
+      })
+      .html(d =>  { return `
+        <div>
+          <div>${d.subject}</div>
+          <div>Search: ${d.valueRealtime} / ${this.realtimeTotal} </div>
+        </div>`; });
+
+
     this.barWidth = 1000 / this.catalogDistribution.length;
 
-    this.groups = this.svg.selectAll('g')
+    this.groups = this.svg.selectAll('.g1')
       .data(this.catalogDistribution)
       .enter()
       .append('g')
+      .classed('g1', true)
       .attr('transform', (d, i) => {
         return 'translate(' + i*this.barWidth  +', 0)';
       })
@@ -101,13 +114,34 @@ export default class DistributionGraphComponent {
       .attr('height', 0)
       .style('fill', '#369');
 
-    this.groups.call(this.tip);
 
+    let tmp = [];
+    for (let i=0; i < 100; i++) tmp.push({});
+    this.groups2 = this.svg.selectAll('.g2')
+      .data(tmp)
+      .enter()
+      .append('g')
+      .classed('g2', true)
+      .attr('transform', (d, i) => {
+        return 'translate(' + i*10  +', 50)';
+      })
+      .on('mouseover', this.tip2.show)
+      .on('mouseout', this.tip2.hide);
+
+    this.groups2.append('rect')
+      .attr('x', 1)
+      .attr('y', 0)
+      .attr('width', 8)
+      .attr('height', 0)
+      .style('fill', '#669');
+
+
+    this.groups.call(this.tip);
+    this.groups2.call(this.tip2);
   }
 
   update(realtimeData) {
     this.realtimeTotal = realtimeData.total;
-
 
     this.groups.each( g => {
       let tmp = realtimeData.distribution.filter( d => d.subject === g.subject );
@@ -118,11 +152,22 @@ export default class DistributionGraphComponent {
       }
     })
 
+    this.groups2.each( (g, i) => {
+      if (i > realtimeData.distribution.length -1) {
+        g.valueRealtime = 0;
+        g.subject = '';
+      } else {
+        g.valueRealtime = realtimeData.distribution[i].value;
+        g.subject = realtimeData.distribution[i].subject;
+      }
+    })
+    console.log(realtimeData.distribution);
 
     const max1 = d3.max( this.groups.data().map(d => d.value / this.catalogTotal ));
     const max2 = d3.max( this.groups.data().map(d => d.valueRealtime / realtimeData.total));
     const max = d3.max([max1, max2])
-    const scale = d3.scaleLinear().domain([0, max]).range([0, this.height]);
+    const scale = d3.scaleLinear().domain([0, max]).range([this.height*0.5, this.height]);
+
 
     this.groups.selectAll('.catalog')
       .transition()
@@ -131,7 +176,7 @@ export default class DistributionGraphComponent {
         return this.height - scale(d.value / this.catalogTotal)
       })
       .attr('height', d => {
-        return scale(d.value / this.catalogTotal);
+        return scale(d.value / this.catalogTotal) - 0.5*this.height;
       });
 
     this.groups.selectAll('.realtime')
@@ -141,66 +186,20 @@ export default class DistributionGraphComponent {
         return this.height - scale(d.valueRealtime / this.realtimeTotal)
       })
       .attr('height', d=> {
-        return scale(d.valueRealtime / this.realtimeTotal);
+        return scale(d.valueRealtime / this.realtimeTotal) - 0.5*this.height;
       });
 
-    /*
-    const data = realtimeData.distribution.map(demand => {
-      const obj = {
-        subject: demand.subject,
-        demand: demand.value / realtimeData.total
-      };
-      if (this.supplySubjects[demand.subject]) {
-        obj.supply = this.supplySubjects[demand.subject] / this.supplyTotal;
-      } else {
-        obj.supply = 'none';
-      }
-      return obj;
-    }).slice(0, NUM_TO_SHOW);
-
-    const x = d3.scaleOrdinal(data.map(function (d, i) { return i * BAR_WIDTH; }))
-      .domain(data.map(function(d) { return d.subject; }));
-    const y = d3.scaleLinear()
-      .domain([0, d3.max(data, this.getMax)]);
-
-    this.svg.selectAll('*').remove();
-
-    this.tip
-      .offset(function() {
-        return [this.getBBox().height/2, 0]
+    const maxLower = d3.max( this.groups2.data().map(d => d.valueRealtime / this.realtimeTotal));
+    const scaleLower = d3.scaleLinear().domain([0, maxLower]).range([0, 40]);
+    this.groups2.selectAll('rect')
+      .transition()
+      .duration(150)
+      .attr('y', d=> {
+        return 60 - scaleLower(d.valueRealtime / this.realtimeTotal)
       })
-      .html(function(d) { return `
-        <div>
-          <div>${d.subject}</div>
-          <div>Demand: ${d.demand}</div>
-          <div>Supply: ${d.supply}</div>
-        </div>`; });
+      .attr('height', d=> {
+        return scaleLower(d.valueRealtime / this.realtimeTotal);
+      });
 
-    let group = this.svg.selectAll('.bar')
-      .data(data)
-      .enter()
-      .append('g')
-      .attr('transform', 'translate(0, -300)');
-
-    group.call(this.tip);
-    group.on('mouseover', this.tip.show)
-         .on('mouseout', this.tip.hide);
-
-    group.append('rect')
-      .attr('class', 'bar')
-      .attr('x', d => x(d.subject))
-      .attr('width', BAR_WIDTH/2 - 3)
-      .attr('y', d => HEIGHT - this.getDemandHeight(d))
-      .attr('height', this.getDemandHeight)
-      .attr('fill', 'red');
-
-    group.append('rect')
-      .attr('class', 'bar')
-      .attr('x', d => x(d.subject) + (BAR_WIDTH/2 - 3))
-      .attr('width', BAR_WIDTH/2 - 3)
-      .attr('y', d => HEIGHT - this.getSupplyHeight(d))
-      .attr('height', this.getSupplyHeight)
-      .attr('fill', 'blue');
-      */
   }
 }
