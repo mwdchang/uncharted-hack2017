@@ -20,6 +20,7 @@ export default class DistributionGraphComponent {
   svg = null;
   supplyTotal = 0;
   supplySubjects = {};
+  height = 100;
 
   getSupplyHeight = (d) => {
     if (d.supply === 'none' || this.supplyTotal === 0) {
@@ -38,8 +39,8 @@ export default class DistributionGraphComponent {
   }
 
   constructor() {
-    fetch('http://10.64.16.97:22222/api/distribution', {
-    // fetch('http://localhost:22222/api/distribution', {
+    // fetch('http://10.64.16.97:22222/api/distribution', {
+    fetch('http://localhost:22222/api/distribution', {
       method: 'GET'
     }).then(res => res.json()
     ).then(res => {
@@ -64,11 +65,11 @@ export default class DistributionGraphComponent {
       .offset(function() {
         return [this.getBBox().height/2, 0]
       })
-      .html(function(d) { return `
+      .html(d =>  { return `
         <div>
           <div>${d.subject}</div>
-          <div>Catalog: ${d.value}</div>
-          <div>Search: ${d.valueRealtime}</div>
+          <div>Catalog: ${d.value} / ${this.catalogTotal} </div>
+          <div>Search: ${d.valueRealtime} / ${this.realtimeTotal} </div>
         </div>`; });
 
 
@@ -121,13 +122,13 @@ export default class DistributionGraphComponent {
     const max1 = d3.max( this.groups.data().map(d => d.value / this.catalogTotal ));
     const max2 = d3.max( this.groups.data().map(d => d.valueRealtime / realtimeData.total));
     const max = d3.max([max1, max2])
-    const scale = d3.scaleLinear().domain([0, max]).range([0, 200]);
+    const scale = d3.scaleLinear().domain([0, max]).range([0, this.height]);
 
     this.groups.selectAll('.catalog')
       .transition()
       .duration(150)
       .attr('y', d => {
-        return 200 - scale(d.value / this.catalogTotal)
+        return this.height - scale(d.value / this.catalogTotal)
       })
       .attr('height', d => {
         return scale(d.value / this.catalogTotal);
@@ -137,7 +138,7 @@ export default class DistributionGraphComponent {
       .transition()
       .duration(150)
       .attr('y', d=> {
-        return 200 - scale(d.valueRealtime / this.realtimeTotal)
+        return this.height - scale(d.valueRealtime / this.realtimeTotal)
       })
       .attr('height', d=> {
         return scale(d.valueRealtime / this.realtimeTotal);

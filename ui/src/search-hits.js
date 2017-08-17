@@ -11,8 +11,8 @@ export default class SearchHits {
         value: 0
       })
     }
+    this.height = 100;
     this.target = target;
-
     this.barWidth = 1000 / (this.max+1);
     this.padding = 2;
     this.init();
@@ -43,7 +43,7 @@ export default class SearchHits {
     bars.append('rect')
       .classed('bar', true)
       .attr('x', this.padding)
-      .attr('y', 200)
+      .attr('y', this.height)
       .attr('width', this.barWidth - 2*this.padding)
       .attr('height', 0)
       .style('fill', '#369')
@@ -72,14 +72,14 @@ export default class SearchHits {
   updateRender() {
     let svg = this.svg;
     let max = d3.max(this.history.map(d=>d.value));
-    let scale = d3.scaleLinear().domain([0, max]).range([0, 200]);
+    let scale = d3.scaleLinear().domain([0, max]).range([0, this.height]);
 
     // console.log(this.history);
     svg.selectAll('.bar')
       .transition()
       .duration(150)
       .attr('y', d=> {
-        return 200 - scale(d.value)
+        return this.height - scale(d.value)
       })
       .attr('height', d=> {
         return scale(d.value);

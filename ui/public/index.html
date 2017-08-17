@@ -56,21 +56,24 @@
 
         <div style="display:flex; flex-direction:row; align-items:center">
           <div class="toggle-modal">About</div>
-          <div style="flex:1; text-align:center">Toronto Public Library Search Monitor</div>
+          <div style="flex:1; text-align:center">
+            Toronto Public Library Search Monitor ::
+            Try at: <a href="http://www.torontopubliclibrary.ca/">http://www.torontopubliclibrary.ca/</a>
+          </div>
         </div>
 
         <div class="main-view">
             <div class="left-pane">
                 <div id="trying-things-out">
                     <div>Distribution of search matches</div>
-                    <div width="100%" height="100px" id="search-hits">
-                      <svg width="100%" height="100%" viewBox="0 0 1000 200">
+                    <div id="search-hits" style="width:100%; height:100px">
+                      <svg width="100%" height="100%" viewBox="0 0 1000 100">
                       </svg>
                     </div>
 
                     <div>Distribution of real time search</div>
-                    <div class="graph-container" id="distribution">
-                      <svg width="100%" height="100%" viewBox="0 0 1000 200"></svg>
+                    <div id="distribution" style="width:100%; height:100px">
+                      <svg width="100%" height="100%" viewBox="0 0 1000 100"></svg>
                     </div>
                 </div>
                 <div id="floaty-graph" style="width:200px; height:200px">

@@ -82,8 +82,8 @@ let listenToSocket = (socketUrl, searchFilter) => {
 };
 
 const searchFilter =  new SearchFilter();
-// listenToSocket('localhost:22222/', searchFilter);
-listenToSocket('http://10.64.16.97:22222/', searchFilter);
+listenToSocket('localhost:22222/', searchFilter);
+// listenToSocket('http://10.64.16.97:22222/', searchFilter);
 
 // let relatedSubjects;
 // setTimeout(() => {
