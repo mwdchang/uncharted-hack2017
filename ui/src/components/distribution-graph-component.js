@@ -161,7 +161,6 @@ export default class DistributionGraphComponent {
         g.subject = realtimeData.distribution[i].subject;
       }
     })
-    console.log(realtimeData.distribution);
 
     const max1 = d3.max( this.groups.data().map(d => d.value / this.catalogTotal ));
     const max2 = d3.max( this.groups.data().map(d => d.valueRealtime / realtimeData.total));
