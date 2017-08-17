@@ -39,8 +39,8 @@ export default class DistributionGraphComponent {
   }
 
   constructor() {
-    // fetch('http://10.64.16.97:22222/api/distribution', {
-    fetch('http://localhost:22222/api/distribution', {
+    fetch('http://10.64.16.97:22222/api/distribution', {
+    // fetch('http://localhost:22222/api/distribution', {
       method: 'GET'
     }).then(res => res.json()
     ).then(res => {

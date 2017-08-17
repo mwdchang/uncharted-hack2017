@@ -85,13 +85,13 @@ let listenToSocket = (socketUrl, searchFilter) => {
 };
 
 const searchFilter =  new SearchFilter();
-listenToSocket('localhost:22222/', searchFilter);
-// listenToSocket('http://10.64.16.97:22222/', searchFilter);
+// listenToSocket('localhost:22222/', searchFilter);
+listenToSocket('http://10.64.16.97:22222/', searchFilter);
 
 setInterval(() => {
   if (listOfSearchResults.length > 3)
     new RelatedSubjectsComponent('floaty-graph', transformSearchResultsToGraph(listOfSearchResults));
-}, 3000);
+}, 8000);
 
 let setupRightPane = () => {
     searchFilter.filters.forEach(filter => {
